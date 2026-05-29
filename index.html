@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Badminton Booking Manager (Shared)</title>
+
+<style>
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --success: #16a34a;
+    --success-bg: #dcfce7;
+    --danger: #dc2626;
+    --danger-bg: #fee2e2;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #f8fafc;
+    color: var(--gray-700);
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    color: #1e293b;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+    border: 1px solid var(--gray-200);
+}
+
+.card h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.25rem;
+    color: #0f172a;
+    border-bottom: 2px solid var(--gray-100);
+    padding-bottom: 8px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+input, select {
+    padding: 10px;
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border 0.2s;
+}
+
+input:focus, select:focus {
+    border-color: var(--primary);
+}
+
+button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.btn-danger {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid var(--danger);
+    padding: 6px 12px;
+}
+
+.btn-danger:hover {
+    background: var(--danger-bg);
+}
+
+.loading-notice {
+    text-align: center;
+    padding: 10px;
+    background: #eff6ff;
+    color: #1e40af;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    display: none;
+}
+
+.tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 2px solid var(--gray-200);
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-600);
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    margin-bottom: -2px;
+    cursor: pointer;
+}
+
+.tab-btn:hover {
+    color: var(--primary);
+}
+
+.tab-btn.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.session {
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+    background: #ffffff;
+}
+
+.session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--gray-100);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.session-header h3 {
+    margin: 0;
+    color: #1e293b;
+}
+
+.session-meta {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 4px 0 0 0;
+}
+
+.attendance-section {
+    margin-bottom: 15px;
+}
+
+.player-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.player-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: var(--gray-100);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    user-select: none;
+}
+
+.attendee-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.attendee {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--gray-100);
+    border-radius: 6px;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+}
+
+.status-badge.paid {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.status-badge.unpaid {
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+th {
+    background: var(--gray-100);
+    color: #475569;
+    font-weight: 600;
+}
+
+tr:hover td {
+    background: #f8fafc;
+}
+
+.summary-paid { color: var(--success); font-weight: 600; }
+.summary-unpaid { color: var(--danger); font-weight: 600; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🏸 Badminton Booking Manager</h1>
+    
+    <div id="loadingNotice" class="loading-notice">🔄 Syncing with Cloud Database...</div>
+
+    <div class="card" id="createBookingCard">
+        <h2>Create Booking</h2>
+        <div class="grid">
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date">
+            </div>
+           <div class="form-group">
+    <label for="time">Time</label>
+    <select id="time">
+        <option value="">Select Time</option>
+    <option>6.00 am - 7.00 am</option>
+    <option>7.00 am - 8.00 am</option>
+    <option>8.00 am - 9.00 am</option>
+    <option>9.00 am - 10.00 am</option>
+    <option>10.00 am - 11.00 am</option>
+    <option>11.00 am - 12.00 pm</option>
+    <option>12.00 pm - 1.00 pm</option>
+    <option>1.00 pm - 2.00 pm</option>
+    <option>2.00 pm - 3.00 pm</option>
+    <option>3.00 pm - 4.00 pm</option>
+    <option>4.00 pm - 5.00 pm</option>
+    <option>5.00 pm - 6.00 pm</option>
+    <option>6.00 pm - 7.00 pm</option>
+    <option>7.00 pm - 8.00 pm</option>
+    <option>8.00 pm - 9.00 pm</option>
+    <option>9.00 pm - 10.00 pm</option>
+    <option>10.00 pm - 11.00 pm</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="court">Court No.</label>
+    <select id="court">
+        <option value="">Select Court</option>
+        <option>Court 1</option>
+        <option>Court 2</option>
+        <option>Court 3</option>
+        <option>Court 4</option>
+        <option>Court 5</option>
+        <option>Court 6</option>
+        <option>Court 7</option>
+        <option>Court 8</option>
+        <option>Court 9</option>
+        <option>Court 10</option>
+    </select>
+</div>
+            <div class="form-group">
+                <label for="total">Total Cost ($)</label>
+                <input type="number" id="total" placeholder="0.00" step="0.01">
+            </div>
+        </div>
+      <div id="adminControls">
+<button class="btn-primary" onclick="createBooking()">Create Booking</button>
+</div>
+    </div>
+
+    <div class="card">
+        <h2>Player Summary Balance (All-Time)</h2>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Total Cost Allocated</th>
+                        <th>Total Paid</th>
+                        <th>Total Unpaid</th>
+                    </tr>
+                </thead>
+                <tbody id="summaryTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="tabs">
+            <button class="tab-btn active" id="tab-active" onclick="switchTab('active')">Active Bookings</button>
+            <button class="tab-btn" id="tab-past" onclick="switchTab('past')">Past Bookings Archive</button>
+        </div>
+        <div id="sessions"></div>
+    </div>
+
+</div>
+
+<script>
+const players = [
+    "Aparna", "Anumitha", "Rahul", "Ajisha", "Ezequiel", 
+    "Virginia", "Amanda", "Jason", "Guest 1", "Guest 2"
+];
+
+// PASTE YOUR GOOGLE SCRIPT URL HERE
+const CLOUD_URL = "YOUR_WEB_APP_URL_HERE";
+const IS_ADMIN = true;
+
+let sessions = [];
+let currentTab = 'active';
+window.onload = function () {
+if (!IS_ADMIN) {
+document.getElementById("createBookingCard").style.display = "none";
+}
+};
+function showLoading(show) {
+    document.getElementById("loadingNotice").style.display = show ? "block" : "none";
+}
+
+// Loads data directly from the cloud Google Sheet
+async function loadFromCloud() {
+    if (CLOUD_URL === "YOUR_WEB_APP_URL_HERE") {
+        console.warn("Cloud URL not configured yet. Running locally.");
+        sessions = JSON.parse(localStorage.getItem("sessions")) || [];
+        renderSessions();
+        renderSummary();
+        return;
+    }
+    
+    showLoading(true);
+    try {
+        const response = await fetch(CLOUD_URL);
+        const data = await response.json();
+        sessions = data.sessions || [];
+        // Backup copy locally
+        localStorage.setItem("sessions", JSON.stringify(sessions));
+    } catch (e) {
+        console.error("Failed to load from Cloud, reverting to local cache.", e);
+        sessions = JSON.parse(localStorage.getItem("sessions")) || [];
+    }
+    showLoading(false);
+    renderSessions();
+    renderSummary();
+}
+
+// Saves data directly to the cloud Google Sheet
+async function saveToCloud() {
+    // Keep local cache up to date
+    localStorage.setItem("sessions", JSON.stringify(sessions));
+    
+    if (CLOUD_URL === "YOUR_WEB_APP_URL_HERE") return;
+
+    showLoading(true);
+    try {
+        await fetch(CLOUD_URL, {
+            method: "POST",
+            mode: "no-cors", // Google App Script requires no-cors configuration
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "save", sessions: sessions })
+        });
+    } catch (e) {
+        console.error("Failed to sync to cloud.", e);
+    }
+    // Briefly delay turning off notice to give user continuous feedback
+    setTimeout(() => showLoading(false), 800);
+}
+
+function createBooking() {
+    const date = document.getElementById("date").value;
+    const time = document.getElementById("time").value;
+    const court = document.getElementById("court").value;
+    const total = parseFloat(document.getElementById("total").value || 0);
+
+    if (!date) {
+        alert("Please select a date.");
+        return;
+    }
+
+    sessions.unshift({
+        id: Date.now(),
+        date,
+        time,
+        court,
+        total,
+        attendees: []
+    });
+
+    document.getElementById("date").value = "";
+    document.getElementById("time").value = "";
+    document.getElementById("court").value = "";
+    document.getElementById("total").value = "";
+
+    renderSessions();
+    renderSummary();
+    saveToCloud();
+}
+
+function addAttendees(sessionId) {
+    const checkboxes = document.querySelectorAll(`input[data-session='${sessionId}']:checked`);
+    const selected = [...checkboxes].map(c => c.value);
+    const session = sessions.find(s => s.id === sessionId);
+
+    const perPerson = selected.length > 0 ? +(session.total / selected.length).toFixed(2) : 0;
+
+    session.attendees = selected.map(name => {
+        const existingAttendee = session.attendees.find(a => a.name === name);
+        return {
+            name,
+            amount: perPerson,
+            paid: existingAttendee ? existingAttendee.paid : false
+        };
+    });
+
+    renderSessions();
+    renderSummary();
+    saveToCloud();
+}
+
+function togglePaid(sessionId, attendeeIndex) {
+    const session = sessions.find(s => s.id === sessionId);
+    session.attendees[attendeeIndex].paid = !session.attendees[attendeeIndex].paid;
+
+    renderSessions();
+    renderSummary();
+    saveToCloud();
+}
+
+function deleteSession(id) {
+    if (!confirm("Are you sure you want to delete this session?")) return;
+    sessions = sessions.filter(s => s.id !== id);
+
+    renderSessions();
+    renderSummary();
+    saveToCloud();
+}
+
+function switchTab(tabType) {
+    currentTab = tabType;
+    document.getElementById('tab-active').classList.toggle('active', tabType === 'active');
+    document.getElementById('tab-past').classList.toggle('active', tabType === 'past');
+    renderSessions();
+}
+
+function renderSummary() {
+    const summary = {};
+    players.forEach(p => summary[p] = { total: 0, paid: 0, unpaid: 0 });
+
+    sessions.forEach(session => {
+        session.attendees.forEach(a => {
+            if (summary[a.name]) {
+                summary[a.name].total += a.amount;
+                if (a.paid) {
+                    summary[a.name].paid += a.amount;
+                } else {
+                    summary[a.name].unpaid += a.amount;
+                }
+            }
+        });
+    });
+
+    const tbody = document.getElementById("summaryTable");
+    tbody.innerHTML = players.map(p => `
+        <tr>
+            <td><strong>${p}</strong></td>
+            <td>$${summary[p].total.toFixed(2)}</td>
+            <td class="summary-paid">$${summary[p].paid.toFixed(2)}</td>
+            <td class="summary-unpaid">$${summary[p].unpaid.toFixed(2)}</td>
+        </tr>
+    `).join("");
+}
+
+function renderSessions() {
+    const container = document.getElementById("sessions");
+    const todayStr = new Date().toLocaleDateString('en-CA'); 
+
+    const filteredSessions = sessions.filter(session => {
+        if (currentTab === 'active') {
+            return session.date >= todayStr;
+        } else {
+            return session.date < todayStr;
+        }
+    });
+
+    if (filteredSessions.length === 0) {
+        container.innerHTML = `<p style='color:#64748b; text-align:center;'>No ${currentTab} bookings found.</p>`;
+        return;
+    }
+
+    container.innerHTML = filteredSessions.map(session => `
+        <div class="session">
+            <div class="session-header">
+                <div>
+                    <h3>📅 ${session.date}</h3>
+                    <p class="session-meta">
+                        📍 <strong>Court:</strong> ${session.court || "-"} | 🕒 <strong>Time:</strong> ${session.time || "-"}
+                    </p>
+                    <p class="session-meta">💰 <strong>Total Cost:</strong> $${session.total.toFixed(2)}</p>
+                </div>
+${IS_ADMIN ? `
+<button class="btn-danger" onclick="deleteSession(${session.id})">Delete</button>
+` : ""}
+            </div>
+
+<div class="attendance-section">
+<strong>${IS_ADMIN ? "Who attended?" : "Attendees"}</strong>
+
+<div class="player-grid">
+${
+IS_ADMIN
+? players.map(p => `
+<label class="player-select">
+<input
+type="checkbox"
+value="${p}"
+data-session="${session.id}"
+onchange="addAttendees(${session.id})"
+${session.attendees.find(a => a.name === p) ? "checked" : ""}
+>
+${p}
+</label>
+`).join("")
+: session.attendees.map(a => `
+<div class="player-select">${a.name}</div>
+`).join("")
+}
+</div>
+</div>
+
+            <strong>Split Breakdown</strong>
+            <div class="attendee-list">
+                ${
+                    session.attendees.length === 0
+                    ? "<p style='color:#94a3b8; margin: 5px 0; font-size:0.9rem;'>No attendees checked yet.</p>"
+                    : session.attendees.map((a, index) => `
+                        <div class="attendee">
+                            <span><strong>${a.name}</strong>: $${a.amount.toFixed(2)}</span>
+${
+IS_ADMIN
+? `
+<button 
+class="status-badge ${a.paid ? 'paid' : 'unpaid'}" 
+onclick="togglePaid(${session.id}, ${session.attendees.indexOf(a)})"
+>
+${a.paid ? "✓ Paid" : "✗ Unpaid"}
+</button>
+`
+: `
+<span class="status-badge ${a.paid ? 'paid' : 'unpaid'}">
+${a.paid ? "✓ Paid" : "✗ Unpaid"}
+</span>
+`
+}
+                        </div>
+                    `).join("")
+                }
+            </div>
+        </div>
+    `).join("");
+}
+
+// Initial Run
+loadFromCloud();
+</script>
+
+</body>
+</html>
