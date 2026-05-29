@@ -369,7 +369,7 @@ const players = [
 ];
 
 // PASTE YOUR GOOGLE SCRIPT URL HERE
-const CLOUD_URL = "YOUR_WEB_APP_URL_HERE";
+const CLOUD_URL = "https://script.google.com/macros/s/AKfycbzjvC4cwkZsbINVLzE3vIsx2YfcxX6i15N3Hqfzyl1OPxCvuf0mbPxZEFlNbvee37vaZg/exec";
 const IS_ADMIN = true;
 
 let sessions = [];
@@ -385,7 +385,7 @@ function showLoading(show) {
 
 // Loads data directly from the cloud Google Sheet
 async function loadFromCloud() {
-    if (CLOUD_URL === "YOUR_WEB_APP_URL_HERE") {
+    if (CLOUD_URL === "https://script.google.com/macros/s/AKfycbzjvC4cwkZsbINVLzE3vIsx2YfcxX6i15N3Hqfzyl1OPxCvuf0mbPxZEFlNbvee37vaZg/exec") {
         console.warn("Cloud URL not configured yet. Running locally.");
         sessions = JSON.parse(localStorage.getItem("sessions")) || [];
         renderSessions();
@@ -414,7 +414,7 @@ async function saveToCloud() {
     // Keep local cache up to date
     localStorage.setItem("sessions", JSON.stringify(sessions));
     
-    if (CLOUD_URL === "YOUR_WEB_APP_URL_HERE") return;
+    if (CLOUD_URL === "https://script.google.com/macros/s/AKfycbzjvC4cwkZsbINVLzE3vIsx2YfcxX6i15N3Hqfzyl1OPxCvuf0mbPxZEFlNbvee37vaZg/exec") return;
 
     showLoading(true);
     try {
