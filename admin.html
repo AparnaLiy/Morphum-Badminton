@@ -250,9 +250,10 @@ table {
 }
 
 th, td {
-    padding: 12px;
+    padding: 5px 8px;
     text-align: left;
     border-bottom: 1px solid var(--gray-200);
+    font-size: 0.82rem;
 }
 
 th {
@@ -261,12 +262,35 @@ th {
     font-weight: 600;
 }
 
+#summaryTable {
+    font-size: 0.82rem;
+}
+
+table thead th {
+    font-size: 0.8rem;
+    padding: 6px 8px;
+}
+
 tr:hover td {
     background: #f8fafc;
 }
+.compact-summary {
+padding: 14px;
+}
 
-.summary-paid { color: var(--success); font-weight: 600; }
-.summary-unpaid { color: var(--danger); font-weight: 600; }
+.compact-summary h2 {
+margin-bottom: 10px;
+font-size: 1rem;
+}
+.summary-paid {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.summary-unpaid {
+    color: var(--danger);
+    font-weight: 600;
+}
 </style>
 </head>
 
@@ -335,16 +359,16 @@ tr:hover td {
 </div>
     </div>
 
-    <div class="card">
-        <h2>Player Summary Balance (All-Time)</h2>
+<div class="card compact-summary">
+<h2>Payment Summary</h2>
         <div style="overflow-x: auto;">
             <table>
                 <thead>
                     <tr>
                         <th>Player</th>
-                        <th>Total Cost Allocated</th>
-                        <th>Total Paid</th>
-                        <th>Total Unpaid</th>
+                        <th>Total</th>
+                        <th>Paid</th>
+                        <th> Due</th>
                     </tr>
                 </thead>
                 <tbody id="summaryTable"></tbody>
@@ -539,13 +563,26 @@ function renderSessions() {
     const container = document.getElementById("sessions");
     const todayStr = new Date().toLocaleDateString('en-CA'); 
 
-    const filteredSessions = sessions.filter(session => {
-        if (currentTab === 'active') {
-            return session.date >= todayStr;
-        } else {
-            return session.date < todayStr;
-        }
-    });
+const filteredSessions = sessions
+.filter(session => {
+if (currentTab === 'active') {
+return session.date >= todayStr;
+} else {
+return session.date < todayStr;
+}
+})
+.sort((a, b) => {
+const dateA = new Date(a.date);
+const dateB = new Date(b.date);
+
+if (currentTab === 'active') {
+// Closest upcoming first
+return dateA - dateB;
+} else {
+// Most recent past booking first
+return dateB - dateA;
+}
+});
 
     if (filteredSessions.length === 0) {
         container.innerHTML = `<p style='color:#64748b; text-align:center;'>No ${currentTab} bookings found.</p>`;
@@ -567,30 +604,26 @@ ${IS_ADMIN ? `
 ` : ""}
             </div>
 
+${IS_ADMIN ? `
 <div class="attendance-section">
-<strong>${IS_ADMIN ? "Who attended?" : "Attendees"}</strong>
+    <strong>Who attended?</strong>
 
-<div class="player-grid">
-${
-IS_ADMIN
-? players.map(p => `
-<label class="player-select">
-<input
-type="checkbox"
-value="${p}"
-data-session="${session.id}"
-onchange="addAttendees(${session.id})"
-${session.attendees.find(a => a.name === p) ? "checked" : ""}
->
-${p}
-</label>
-`).join("")
-: session.attendees.map(a => `
-<div class="player-select">${a.name}</div>
-`).join("")
-}
+    <div class="player-grid">
+        ${players.map(p => `
+        <label class="player-select">
+            <input
+                type="checkbox"
+                value="${p}"
+                data-session="${session.id}"
+                onchange="addAttendees(${session.id})"
+                ${session.attendees.find(a => a.name === p) ? "checked" : ""}
+            >
+            ${p}
+        </label>
+        `).join("")}
+    </div>
 </div>
-</div>
+` : ""}
 
             <strong>Split Breakdown</strong>
             <div class="attendee-list">
