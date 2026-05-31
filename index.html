@@ -595,9 +595,10 @@ return dateB - dateA;
                 <div>
                     <h3>📅 ${session.date}</h3>
                     <p class="session-meta">
-                        📍 <strong>Court:</strong> ${session.court || "-"} | 🕒 <strong>Time:</strong> ${session.time || "-"}
+                    ${session.court || "-"} |
+                    ${session.time || "-"} |
+                    $${session.total.toFixed(2)}
                     </p>
-                    <p class="session-meta">💰 <strong>Total Cost:</strong> $${session.total.toFixed(2)}</p>
                 </div>
 ${IS_ADMIN ? `
 <button class="btn-danger" onclick="deleteSession(${session.id})">Delete</button>
